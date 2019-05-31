@@ -1,0 +1,12 @@
+1/windows/7 Pro 64bit
+2/windows/8 Pro 64bit
+3/windows/10 Pro 64bit
+4/windows/10 Home 64bit
+5/Office365/2018
+6/Office365/2019
+7/Microsoft Visual Studio/2010
+8/Microsoft Visual Studio/2013
+9/Microsoft Visual Studio/2015
+10/Adobe Photoshop/CC 2018
+11/Adobe Photoshop/CC 2019
+12/Adobe Photoshop/CS4
