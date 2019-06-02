@@ -196,11 +196,27 @@ void ReturnAcceptScreen(rental *rentalInfo, int page, int size) {
 	}
 }
 
-void RentalStatusScreen(rental *rentalInfo, int page, int size) {//, int sType, char search[30], int aType
+void RentalStatusScreen(rental *rentalInfo, int page, int size, int sType, char search[]) {
 	system("mode con:cols=150 lines=30");
 	system("cls");
 	gotoxy(1, 1);
 	printf("[ 대여 반납 전체 현황 ]");
+	if (sType == 1)printf("- '%s' 검색결과", search);
+	else if (sType == 2) {
+		switch (search[0]) {
+		case '1':
+			printf("- '대여신청' 상태 검색결과"); break;
+		case '2':
+			printf("- '대여중' 상태 검색결과"); break;
+		case '3':
+			printf("- '반납신청' 상태 검색결과"); break;
+		case '4':
+			printf("- '반납완료' 상태 검색결과"); break;
+		default:
+			printf("- 검색 오류"); break;
+		}
+	}
+	else if (sType == 3) printf("- '%s' 사용자 검색결과", search);
 	gotoxy(140, 1);
 	printf("PAGE %d/%d", page, (size / 10) + 1);
 	gotoxy(0, 2);
@@ -216,13 +232,31 @@ void RentalStatusScreen(rental *rentalInfo, int page, int size) {//, int sType, 
 		gotoxy(1, 28);
 		printf("S: 검색 / A: 정렬 / ESC: 메뉴화면");
 
+		int pg = 0;
+		int i = 0;
 		char license[50];
 
 		gotoxy(0, 7);
-		for (int i = ((page - 1) * 10); i < ((page - 1) * 10 + 10); i++) {
+		while (pg < ((page - 1) * 10 + 10)) {
 			if (i >= size)break;
+			gotoxy(0, 7 + ((pg % 10) * 2));
 
-			if(rentalInfo[i].status != '1'&&rentalInfo[i].status!='4')GetLicense(rentalInfo[i].swSeq, license);
+			if (sType != 0) {
+				if (sType == 1 && strstr(rentalInfo[i].swName, search) == NULL) {
+					i++;
+					continue;
+				}
+				if (sType == 2 && rentalInfo[i].status != search[0]) {
+					i++;
+					continue;
+				}
+				if (sType == 3 && (strstr(rentalInfo[i].userName, search) == NULL) && (strstr(rentalInfo[i].id, search) == NULL)) {
+					i++;
+					continue;
+				}
+			}
+
+			if (rentalInfo[i].status != '1'&&rentalInfo[i].status != '4')GetLicense(rentalInfo[i].swSeq, license);
 			else strcpy(license, "-");
 
 			printf(" %-50s%-12s%-13s%-13s%-50s", rentalInfo[i].swName, rentalInfo[i].userName, rentalInfo[i].rentalDt, rentalInfo[i].returnDt, license);
@@ -238,6 +272,13 @@ void RentalStatusScreen(rental *rentalInfo, int page, int size) {//, int sType, 
 			default:
 				printf("%-10s\n\n", "오류"); break;
 			}
+			pg += 1;
+			i++;
+		}
+
+		if (pg == 0) {
+			gotoxy(2, 8);
+			printf("검색 결과가 없습니다.");
 		}
 	}
 	else {
@@ -456,11 +497,83 @@ void ReturnRequestScreen(rental *rentalInfo, member member, int page, int size) 
 	}
 }
 
-void MyRentalStatusScreen(rental *rentalInfo, int page, int size) {//, int sType, char search[30], int aType
+void SearchItemScreen(int isAdmin) {
+	system("cls");
+	gotoxy(63, 9);
+	printf("검색 항목 선택");
+	gotoxy(65, 12);
+	printf("소프트웨어명");
+	gotoxy(65, 14);
+	printf("대 여 현 황");
+	if (isAdmin) {
+		gotoxy(65, 16);
+		printf("사 용 자 명");
+		gotoxy(65, 18);
+		printf("뒤 로 가 기");
+	}
+	else {
+		gotoxy(65, 16);
+		printf("뒤 로 가 기");
+	}
+	gotoxy(62, 12);
+	printf("▶");
+}
+
+void SearchInputScreen() {
+	system("cls");
+	gotoxy(55, 15);
+	printf("검색어 : ");
+	Cursor(1);
+}
+
+void SearchStatusScreen() {
+	system("cls");
+	gotoxy(55, 8);
+	printf("검색할 상태의 번호를 입력해주세요");
+	gotoxy(63, 11);
+	printf("1. 대 여 신 청");
+	gotoxy(63, 13);
+	printf("2. 대 여 중");
+	gotoxy(63, 15);
+	printf("3. 반 납 신 청");
+	gotoxy(63, 17);
+	printf("4. 반 납 완 료");
+}
+
+void SortItemScreen() {
+	system("cls");
+	gotoxy(63, 9);
+	printf("정렬 항목 선택");
+	gotoxy(50, 12);
+	printf("대여날짜 최근순");
+	gotoxy(50, 14);
+	printf("대여날짜 오래된순");
+	gotoxy(50, 16);
+	printf("상태(반납신청,대여신청,대여중,반납완료 순)");
+	gotoxy(47, 12);
+	printf("▶");
+}
+
+void MyRentalStatusScreen(rental *rentalInfo, int page, int size, int sType, char search[]) {//int aType
 	system("mode con:cols=140 lines=30");
 	system("cls");
 	gotoxy(1, 1);
 	printf("[ 나의 대여 반납 현황 ]");
+	if (sType == 1)printf("- '%s' 검색결과", search);
+	else if (sType == 2) {
+		switch (search[0]) {
+		case '1':
+			printf("- '대여신청' 상태 검색결과"); break;
+		case '2':
+			printf("- '대여중' 상태 검색결과"); break;
+		case '3':
+			printf("- '반납신청' 상태 검색결과"); break;
+		case '4':
+			printf("- '반납완료' 상태 검색결과"); break;
+		default:
+			printf("- 검색 오류"); break;
+		}
+	}
 	gotoxy(130, 1);
 	printf("PAGE %d/%d", page, (size / 10) + 1);
 	gotoxy(0, 2);
@@ -476,11 +589,25 @@ void MyRentalStatusScreen(rental *rentalInfo, int page, int size) {//, int sType
 		gotoxy(1, 28);
 		printf("S: 검색 / A: 정렬 / ESC: 메뉴화면");
 
+		int pg = 0;
+		int i = 0;
 		char license[50];
 
 		gotoxy(0, 7);
-		for (int i = ((page - 1) * 10); i < ((page - 1) * 10 + 10); i++) {
+		while (pg < ((page - 1) * 10 + 10)) {
 			if (i >= size)break;
+			gotoxy(0, 7 + ((pg % 10) * 2));
+
+			if (sType != 0) {
+				if (sType == 1 && strstr(rentalInfo[i].swName,search)==NULL) {
+					i++;
+					continue;
+				}
+				if (sType == 2 && rentalInfo[i].status != search[0]) {
+					i++;
+					continue;
+				}
+			}
 
 			if (rentalInfo[i].status != '1'&&rentalInfo[i].status != '4')GetLicense(rentalInfo[i].swSeq, license);
 			else strcpy(license, "-");
@@ -498,6 +625,13 @@ void MyRentalStatusScreen(rental *rentalInfo, int page, int size) {//, int sType
 			default:
 				printf("%-10s\n\n", "오류"); break;
 			}
+			pg += 1;
+			i++;
+		}
+
+		if (pg == 0) {
+			gotoxy(2, 8);
+			printf("검색 결과가 없습니다.");
 		}
 	}
 	else {

@@ -563,46 +563,155 @@ void GetLicense(int seq, char license[50]) {
 	fclose(fp);
 }
 
-void sortRentByStatus(software *sw, int n) {
+void sortRentByDateAsc(rental *rt, int n) {// 대여날짜 최근순
 	int index;
-	char tmpName[50], tmpLicense[50], min;
+	char max[15];
+	rental tmp;
 
 	for (int i = 0; i < n - 1; i++) {
-		min = sw[i].status;
-		strcpy(tmpName, sw[i].name);
-		strcpy(tmpLicense, sw[i].license);
+		strcpy(max, rt[i].rentalDt);
+		tmp.seq = rt[i].seq;
+		strcpy(tmp.id, rt[i].id);
+		strcpy(tmp.userName, rt[i].userName);
+		tmp.swInfoSeq = rt[i].swInfoSeq;
+		strcpy(tmp.swName, rt[i].swName);
+		tmp.swSeq = rt[i].swSeq;
+		strcpy(tmp.returnDt, rt[i].returnDt);
+		tmp.status = rt[i].status;
+		strcpy(tmp.use, rt[i].use);
+
 		index = i;
 		for (int j = i + 1; j < n; j++) {
-			if (min > sw[j].status) {
-				strcpy(tmpName, sw[j].name);
-				strcpy(tmpLicense, sw[j].license);
-				min = sw[j].status;
+			if (strcmp(max, rt[j].rentalDt) < 0) {
+				strcpy(max, rt[j].rentalDt);
+				tmp.seq = rt[j].seq;
+				strcpy(tmp.id, rt[j].id);
+				strcpy(tmp.userName, rt[j].userName);
+				tmp.swInfoSeq = rt[j].swInfoSeq;
+				strcpy(tmp.swName, rt[j].swName);
+				tmp.swSeq = rt[j].swSeq;
+				strcpy(tmp.returnDt, rt[j].returnDt);
+				tmp.status = rt[j].status;
+				strcpy(tmp.use, rt[j].use);
 				index = j;
 			}
 		}
 
-		strcpy(sw[index].name, sw[i].name);
-		strcpy(sw[index].license, sw[i].license);
-		sw[index].status = sw[i].status;
+		strcpy(rt[index].rentalDt, rt[i].rentalDt);
+		rt[index].seq = rt[i].seq;
+		strcpy(rt[index].id, rt[i].id);
+		strcpy(rt[index].userName, rt[i].userName);
+		rt[index].swInfoSeq = rt[i].swInfoSeq;
+		strcpy(rt[index].swName, rt[i].swName);
+		rt[index].swSeq = rt[i].swSeq;
+		strcpy(rt[index].returnDt, rt[i].returnDt);
+		rt[index].status = rt[i].status;
+		strcpy(rt[index].use, rt[i].use);
 
-		strcpy(sw[i].name, tmpName);
-		strcpy(sw[i].license, tmpLicense);
-		sw[i].status = min;
+		strcpy(rt[i].rentalDt, max);
+		rt[i].seq = tmp.seq;
+		strcpy(rt[i].id, tmp.id);
+		strcpy(rt[i].userName, tmp.userName);
+		rt[i].swInfoSeq = tmp.swInfoSeq;
+		strcpy(rt[i].swName, tmp.swName);
+		rt[i].swSeq = tmp.swSeq;
+		strcpy(rt[i].returnDt, tmp.returnDt);
+		rt[i].status = tmp.status;
+		strcpy(rt[i].use, tmp.use);
 	}
 }
 
-void serachName(software *sw, int n, char search[]) {
-	int result = 0;
+void sortRentByDateDesc(rental *rt, int n) {// 대여날짜 오래된순
+	int index;
+	char min[15];
+	rental tmp;
 
-	for (int i = 0; i < n; i++) {
-		if (strstr(sw[i].name, search) != NULL) {
-			printf("%-40s%-40s\t", sw[i].name, sw[i].license);
-			if (sw[i].status == '1') printf("%s\n", "대여가능");
-			else printf("%s\n", "대여중");
+	for (int i = 0; i < n - 1; i++) {
+		strcpy(min, rt[i].rentalDt);
+		tmp.seq = rt[i].seq;
+		strcpy(tmp.id, rt[i].id);
+		strcpy(tmp.userName, rt[i].userName);
+		tmp.swInfoSeq = rt[i].swInfoSeq;
+		strcpy(tmp.swName, rt[i].swName);
+		tmp.swSeq = rt[i].swSeq;
+		strcpy(tmp.returnDt, rt[i].returnDt);
+		tmp.status = rt[i].status;
+		strcpy(tmp.use, rt[i].use);
 
-			result++;
+		index = i;
+		for (int j = i + 1; j < n; j++) {
+			if (strcmp(min,rt[j].rentalDt)>0) {
+				strcpy(min, rt[j].rentalDt);
+				tmp.seq = rt[j].seq;
+				strcpy(tmp.id, rt[j].id);
+				strcpy(tmp.userName, rt[j].userName);
+				tmp.swInfoSeq = rt[j].swInfoSeq;
+				strcpy(tmp.swName, rt[j].swName);
+				tmp.swSeq = rt[j].swSeq;
+				strcpy(tmp.returnDt, rt[j].returnDt);
+				tmp.status = rt[j].status;
+				strcpy(tmp.use, rt[j].use);
+				index = j;
+			}
+		}
+
+		strcpy(rt[index].rentalDt, rt[i].rentalDt);
+		rt[index].seq = rt[i].seq;
+		strcpy(rt[index].id, rt[i].id);
+		strcpy(rt[index].userName, rt[i].userName);
+		rt[index].swInfoSeq = rt[i].swInfoSeq;
+		strcpy(rt[index].swName, rt[i].swName);
+		rt[index].swSeq = rt[i].swSeq;
+		strcpy(rt[index].returnDt, rt[i].returnDt);
+		rt[index].status = rt[i].status;
+		strcpy(rt[index].use, rt[i].use);
+
+		strcpy(rt[i].rentalDt, min);
+		rt[i].seq = tmp.seq;
+		strcpy(rt[i].id, tmp.id);
+		strcpy(rt[i].userName, tmp.userName);
+		rt[i].swInfoSeq = tmp.swInfoSeq;
+		strcpy(rt[i].swName, tmp.swName);
+		rt[i].swSeq = tmp.swSeq;
+		strcpy(rt[i].returnDt, tmp.returnDt);
+		rt[i].status = tmp.status;
+		strcpy(rt[i].use, tmp.use);
+	}
+}
+
+void sortRentByStatus(rental *rt, int n) {// 상태순 (반납신청-3, 대여신청-1, 대여중-2, 반납완료-4)
+	int index = 0;
+	char status[4] = { '3','1','2','4' };
+	rental *tmp = (rental *)malloc((n) * sizeof(rental));
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < n; j++) {
+			if (status[i] == rt[j].status) {
+				strcpy(tmp[index].rentalDt, rt[j].rentalDt);
+				tmp[index].seq = rt[j].seq;
+				strcpy(tmp[index].id, rt[j].id);
+				strcpy(tmp[index].userName, rt[j].userName);
+				tmp[index].swInfoSeq = rt[j].swInfoSeq;
+				strcpy(tmp[index].swName, rt[j].swName);
+				tmp[index].swSeq = rt[j].swSeq;
+				strcpy(tmp[index].returnDt, rt[j].returnDt);
+				tmp[index].status = rt[j].status;
+				strcpy(tmp[index].use, rt[i].use);
+				index += 1;
+			}
 		}
 	}
 
-	if (result == 0)printf("검색결과가 0건입니다.\n");
+	for (int i = 0; i < n; i++) {
+		strcpy(rt[i].rentalDt, tmp[i].rentalDt);
+		rt[i].seq = tmp[i].seq;
+		strcpy(rt[i].id, tmp[i].id);
+		strcpy(rt[i].userName, tmp[i].userName);
+		rt[i].swInfoSeq = tmp[i].swInfoSeq;
+		strcpy(rt[i].swName, tmp[i].swName);
+		rt[i].swSeq = tmp[i].swSeq;
+		strcpy(rt[i].returnDt, tmp[i].returnDt);
+		rt[i].status = tmp[i].status;
+		strcpy(rt[i].use, tmp[i].use);
+	}
 }

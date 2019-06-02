@@ -199,7 +199,7 @@ int UserMenuController() {
 		if (input == 72 && y != 12) {
 			y -= 2;
 		}
-		else if (input == 80 && y != 20) {
+		else if (input == 80 && y != 18) {
 			y += 2;
 		}
 		gotoxy(42, y);
@@ -222,6 +222,97 @@ int UserMenuController() {
 	}
 
 	return choiceMenu;
+}
+
+void SearchItemController(int *sType, char search[30],int isAdmin) {
+	SearchItemScreen(isAdmin);
+
+	int y = 12;
+	int max = 16;
+	if (isAdmin)max = 18;
+	char input;
+
+	do {
+		input = _getch();
+		gotoxy(62, y);
+		printf(" ");
+		if (input == 72 && y != 12) {
+			y -= 2;
+		}
+		else if (input == 80 && y != max) {
+			y += 2;
+		}
+		gotoxy(62, y);
+		printf("▶");
+	} while (input != 13);
+
+	switch (y) {
+	case 12:
+		*sType = 1;
+		SearchInputScreen();
+		scanf_s("%s", search, 30);
+		Cursor(0);
+		break;
+	case 14:
+		*sType = 2;
+		SearchStatusScreen();
+		char tmp;
+		while (1) {
+			tmp = _getch();
+			if (tmp >= '1'&&tmp <= '4')break;
+		}
+		search[0] = tmp;
+		break;
+	case 16:
+		if (isAdmin == 0) {
+			search[0] = '\0';
+		}
+		else {
+			*sType = 3;
+			SearchInputScreen();
+			scanf_s("%s", search, 30);
+			Cursor(0);
+		}
+		break;
+	default:
+		search[0] = '\0';
+		break;
+	}
+}
+
+void SortItemController(int *aType) {
+	SortItemScreen();
+
+	int y = 12;
+	char input;
+
+	do {
+		input = _getch();
+		gotoxy(47, y);
+		printf(" ");
+		if (input == 72 && y != 12) {
+			y -= 2;
+		}
+		else if (input == 80 && y != 16) {
+			y += 2;
+		}
+		gotoxy(47, y);
+		printf("▶");
+	} while (input != 13);
+
+	switch (y) {
+	case 12:
+		*aType = 1;
+		break;
+	case 14:
+		*aType = 2;
+		break;
+	case 16:
+		*aType = 3;
+		break;
+	default:
+		break;
+	}
 }
 
 void RentalAcceptController() {
@@ -365,7 +456,7 @@ void ReturnAcceptController() {
 	}
 }
 
-void RentalStatusController() {
+void RentalStatusController(int sType, char search[30], int aType) {
 	int size = getRentalCnt();
 	int page = 1;
 	char input;
@@ -373,26 +464,45 @@ void RentalStatusController() {
 	if (size > 0) {
 		rental *rentalInfo = (rental *)malloc((size) * sizeof(rental));
 		GetRentalInfoList(rentalInfo, size);
-		RentalStatusScreen(rentalInfo, page, size);
+		if (aType != 0) {
+			switch (aType) {
+			case 1: //대여날짜 최근순
+				sortRentByDateAsc(rentalInfo, size);
+				break;
+			case 2: //대여날짜 오래된순
+				sortRentByDateDesc(rentalInfo, size);
+				break;
+			case 3: //상태 순
+				sortRentByStatus(rentalInfo, size);
+				break;
+			}
+		}
+		RentalStatusScreen(rentalInfo, page, size, sType, search);
 
 		do {
 			input = _getch();
 			if (input == 'S' || input == 's') { // 검색
-				
+				char s[30];
+				SearchItemController(&sType, s, 1);
+				if (s[0] == '\0') strcpy(s, search);
+				RentalStatusController(sType, s, aType);
+				return;
 			}
 			else if (input == 'A' || input == 'a') { // 정렬
-				
+				SortItemController(&aType);
+				RentalStatusController(sType, search, aType);
+				return;
 			}
 			else if (input == 75) { // 왼쪽
 				if (page > 1) {
 					page--;
-					RentalStatusScreen(rentalInfo, page, size);
+					RentalStatusScreen(rentalInfo, page, size, sType, search);
 				}
 			}
 			else if (input == 77) { // 오른쪽
 				if (page < ((size / 10) + 1)) {
 					page++;
-					RentalStatusScreen(rentalInfo, page, size);
+					RentalStatusScreen(rentalInfo, page, size, sType, search);
 				}
 			}
 		} while (input != 27);
@@ -400,7 +510,7 @@ void RentalStatusController() {
 	}
 	else {
 		rental rt;
-		RentalStatusScreen(&rt, 0, size);
+		RentalStatusScreen(&rt, 0, size, 0, "");
 		do {
 			input = _getch();
 		} while (input != 27);
@@ -585,6 +695,68 @@ void RentalSoftwareInputController(swInfo swInfo, member user) {
 	RentalSoftware(tmpRt);
 }
 
+void MyRentalStatusController(member member, int sType, char search[30], int aType) {
+	int size = getUserRentalCnt(member.id);
+	int page = 1;
+	char input;
+
+	if (size > 0) {
+		rental *rentalInfo = (rental *)malloc((size) * sizeof(rental));
+		GetUserRentalInfoList(rentalInfo, size, member.id);
+		if (aType != 0) {
+			switch (aType) {
+			case 1: //대여날짜 최근순
+				sortRentByDateAsc(rentalInfo, size);
+				break;
+			case 2: //대여날짜 오래된순
+				sortRentByDateDesc(rentalInfo, size);
+				break;
+			case 3: //상태 순
+				sortRentByStatus(rentalInfo, size);
+				break;
+			}
+		}
+		MyRentalStatusScreen(rentalInfo, page, size, sType, search);
+
+		do {
+			input = _getch();
+			if (input == 'S' || input == 's') { // 검색
+				char s[30];
+				SearchItemController(&sType, s, 0);
+				if (s[0] == '\0') strcpy(s, search);
+				MyRentalStatusController(member, sType, s, aType);
+				return;
+			}
+			else if (input == 'A' || input == 'a') { // 정렬
+				SortItemController(&aType);
+				MyRentalStatusController(member, sType, search, aType);
+				return;
+			}
+			else if (input == 75) { // 왼쪽
+				if (page > 1) {
+					page--;
+					MyRentalStatusScreen(rentalInfo, page, size, sType, search);
+				}
+			}
+			else if (input == 77) { // 오른쪽
+				if (page < ((size / 10) + 1)) {
+					page++;
+					MyRentalStatusScreen(rentalInfo, page, size, sType, search);
+				}
+			}
+		} while (input != 27);
+		system("mode con:cols=100 lines=30");
+	}
+	else {
+		rental rt;
+		MyRentalStatusScreen(&rt, 0, size, sType, search);
+		do {
+			input = _getch();
+		} while (input != 27);
+		system("mode con:cols=100 lines=30");
+	}
+}
+
 void RentalRequestController(member member) {
 	int size = getSoftwareCnt();
 	int choice = 0;
@@ -615,11 +787,12 @@ void RentalRequestController(member member) {
 					gotoxy(34, 13);
 					printf("아무키나 누르면 돌아갑니다");
 					_getch();
+					RentalRequestController(member);
 				}
 				else {
 					RentalSoftwareInputController(sw[choice], member);
+					MyRentalStatusController(member, 0, "", 0); // 현황화면으로 바로가서 조회
 				}
-				RentalRequestController(member);//이후에 현황조회 화면으로 수정하기!!
 				return;
 			}
 			else if (input == 72 && (choice % 10) > 0) { // 방향키 위
@@ -658,7 +831,7 @@ void ReturnRequestController(member member) {
 	int page = 1;
 	char input;
 
-	if (size > 0) {
+	if (realSize > 0) {
 		rental *rentalInfo = (rental *)malloc((size) * sizeof(rental));
 		GetRentalInfoList(rentalInfo, size);
 		ReturnRequestScreen(rentalInfo, member, page, realSize);
@@ -682,7 +855,7 @@ void ReturnRequestController(member member) {
 			if (input == 13) {
 				rentalInfo[retalList[choice]].status = '3';
 				ReturnSoftware(rentalInfo);
-				ReturnRequestController(member);//이후에 현황조회 화면으로 수정하기!!
+				MyRentalStatusController(member, 0, "", 0); // 현황화면으로 바로가서 조회
 				return;
 			}
 			else if (input == 72 && (choice % 10) > 0) { // 방향키 위
@@ -707,52 +880,9 @@ void ReturnRequestController(member member) {
 	}
 	else {
 		rental rt;
-		ReturnRequestScreen(&rt, member, page, realSize);
+		ReturnRequestScreen(&rt, member, 0, realSize);
 		do {
 			input = _getch();
 		} while (input != 27);
-	}
-}
-
-void MyRentalStatusController(member member) {
-	int size = getUserRentalCnt(member.id);
-	int page = 1;
-	char input;
-
-	if (size > 0) {
-		rental *rentalInfo = (rental *)malloc((size) * sizeof(rental));
-		GetUserRentalInfoList(rentalInfo, size, member.id);
-		MyRentalStatusScreen(rentalInfo, page, size);
-
-		do {
-			input = _getch();
-			if (input == 'S' || input == 's') { // 검색
-
-			}
-			else if (input == 'A' || input == 'a') { // 정렬
-
-			}
-			else if (input == 75) { // 왼쪽
-				if (page > 1) {
-					page--;
-					MyRentalStatusScreen(rentalInfo, page, size);
-				}
-			}
-			else if (input == 77) { // 오른쪽
-				if (page < ((size / 10) + 1)) {
-					page++;
-					MyRentalStatusScreen(rentalInfo, page, size);
-				}
-			}
-		} while (input != 27);
-		system("mode con:cols=100 lines=30");
-	}
-	else {
-		rental rt;
-		MyRentalStatusScreen(&rt, 0, size);
-		do {
-			input = _getch();
-		} while (input != 27);
-		system("mode con:cols=100 lines=30");
 	}
 }

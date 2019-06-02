@@ -28,6 +28,18 @@ void AdminMenuScreen();
 // 사용자 메뉴 화면
 void UserMenuScreen();
 
+// 현황조회 검색
+void SearchItemScreen(int isAdmin);
+
+// 현황조회 검색어 입력(소프트웨어명)
+void SearchInputScreen();
+
+// 현황조회 검색 입력(상태)
+void SearchStatusScreen();
+
+// 현황조회 정렬 조건
+void SortItemScreen();
+
 // 대여 수락 화면
 void RentalAcceptScreen(rental *retalInfo, int page, int size);
 
@@ -35,7 +47,7 @@ void RentalAcceptScreen(rental *retalInfo, int page, int size);
 void ReturnAcceptScreen(rental *retalInfo, int page, int size);
 
 // 전체 현황 조회 화면
-void RentalStatusScreen(rental *rentalInfo, int page, int size);
+void RentalStatusScreen(rental *rentalInfo, int page, int size, int sType, char search[]);
 
 // 소프트웨어 추가 화면
 void AddSoftwareInfoScreen();
@@ -62,4 +74,4 @@ void RentalRequestScreen(swInfo *sw, int page, int size);
 void ReturnRequestScreen(rental *rentalInfo, member member, int page, int size);
 
 // 내 현황조회 화면
-void MyRentalStatusScreen(rental *rentalInfo, int page, int size);
+void MyRentalStatusScreen(rental *rentalInfo, int page, int size, int sType, char search[]);

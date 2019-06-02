@@ -13,6 +13,12 @@ int AdminMenuController();
 // 사용자 메뉴
 int UserMenuController();
 
+// 현황조회 검색 항목 선택
+void SearchItemController(int *sType, char search[30], int isAdmin);
+
+// 현황조회 정렬 항목 선택
+void SortItemController(int *aType);
+
 // 대여 수락 조작
 void RentalAcceptController();
 
@@ -20,7 +26,7 @@ void RentalAcceptController();
 void ReturnAcceptController();
 
 // 전체 현황 조작
-void RentalStatusController();
+void RentalStatusController(int sType, char search[30], int aType);
 
 // 소프트웨어 추가
 void AddSoftwareController(int swInfoSeq, int newSeq, char name[50], char version[30]);
@@ -46,5 +52,5 @@ void RentalRequestController(member member);
 // 반납 신청 조작
 void ReturnRequestController(member member);
 
-// 내 현황조회조작
-void MyRentalStatusController(member member);
+// 내 현황조회조작 sType: 검색 항목, aType: 정렬 조건
+void MyRentalStatusController(member member,int sType, char search[30], int aType);

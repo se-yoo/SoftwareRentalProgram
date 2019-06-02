@@ -45,7 +45,7 @@ void main() {
 					ReturnAcceptController();
 					break;
 				case 3: // 전체현황 조회
-					RentalStatusController();
+					RentalStatusController(0,"",0);
 					break;
 				case 4: // 소프트웨어관리
 					SoftWareInfoListController();
@@ -68,7 +68,7 @@ void main() {
 					ReturnRequestController(loginUser);
 					break; 
 				case 3: // 내 현황조회
-					MyRentalStatusController(loginUser);
+					MyRentalStatusController(loginUser, 0, "", 0);
 					break;
 				default:
 					loginYN = 0;

@@ -72,11 +72,14 @@ void ReturnSoftware(rental *rentalSw);
 // 라이선스 가져오기
 void GetLicense(int seq, char license[50]);
 
-// 정렬-상태
-void sortRentByStatus(software *sw, int cnt);
+// 정렬-대여날짜 최근
+void sortRentByDateAsc(rental *rt, int n);
 
-// 검색-소프트웨어명
-void serachName(software *sw, int cnt, char search[]);
+// 정렬-대여날짜 오래된순
+void sortRentByDateDesc(rental *rt, int n);
+
+// 정렬-상태
+void sortRentByStatus(rental *rt, int n);
 
 // 회원추가
 void createMember(char id[20], char pw[20], char name[20]);
