@@ -1,2 +1,12 @@
 ﻿  controller.c
-  SoftwareRentalProgram.vcxproj -> D:\산기대\C Project\SoftwareRentalProgram\Debug\SoftwareRentalProgram.exe
+  main.c
+d:\softwarerentalprogram\softwarerentalprogram\main.c(16): warning C4013: 'Cursor'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+  member.c
+d:\softwarerentalprogram\softwarerentalprogram\member.c(13): warning C4013: 'system'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+d:\softwarerentalprogram\softwarerentalprogram\member.c(14): warning C4013: 'gotoxy'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+d:\softwarerentalprogram\softwarerentalprogram\member.c(18): warning C4013: 'getch'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+  screen.c
+d:\softwarerentalprogram\softwarerentalprogram\screen.c(184): warning C4013: 'GetLicense'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+  sw.c
+  코드를 생성하고 있습니다...
+  SoftwareRentalProgram.vcxproj -> D:\SoftwareRentalProgram\Debug\SoftwareRentalProgram.exe
